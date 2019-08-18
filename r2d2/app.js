@@ -3,9 +3,9 @@
 
 //api key for google map.....
 var mapKey = '';
-var serviceURL = "http://172.29.81.232:8000/homepage/";
-var serviceHisURL1 = "http://172.29.81.232:8000/compare/";
-var serviceHisURL = "http://172.29.81.232:8000/history/";
+var serviceURL = "http://.....:8000/homepage/";
+var serviceHisURL1 = "http://.....:8000/compare/";
+var serviceHisURL = "http://.......:8000/history/";
 
 var adlLattitude = -34.928101;
 var adlLonggitude = 138.599899;
