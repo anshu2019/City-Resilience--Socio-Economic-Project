@@ -2,7 +2,7 @@
 //global variable --> .........................
 
 //api key for google map.....
-var mapKey = 'AIzaSyCcKBfNghkIPT3ExI2kdWZnv1Y_5XchzQg';
+var mapKey = '';
 var serviceURL = "http://172.29.81.232:8000/homepage/";
 var serviceHisURL1 = "http://172.29.81.232:8000/compare/";
 var serviceHisURL = "http://172.29.81.232:8000/history/";
