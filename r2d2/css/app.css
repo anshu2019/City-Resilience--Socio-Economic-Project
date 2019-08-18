@@ -1,0 +1,206 @@
+
+.header {
+    margin-left: 10px;
+    margin-right: 10px;
+    /*text-shadow: -2px -1px black;*/
+
+    background-color: rgba(0, 0, 0, .075);
+    /*box-shadow: -2px 5px black;*/
+    border-color: black;
+    border-width: 1px;
+    border-radius: 8px;
+    border-style: solid;
+}
+
+.subheader {
+    background-color: red;
+    color: white;
+    border-color: red;
+    border-width: 2px;
+    border-radius: 8px;
+    border-style: solid;
+}
+
+.login {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    padding-top: 180px;
+    padding-bottom: 230px;
+    /*  border-color:black;
+      border-width:2px;
+      border-radius:8px;
+      border-style:solid;*/
+    background-color: rgba(0, 0, 0, .075);
+}
+
+.nav-tabs .nav-link {
+    margin-left: 10px;
+    margin-right: 0px;
+    border: 1px solid transparent;
+    border-top-left-radius: .35rem;
+    border-top-right-radius: .35rem;
+    color: white;
+    width: 120px;
+    font-weight: bold;
+    background-color: #0697c4;
+    border-color: white;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-style: solid;
+}
+
+.dvMenuContent {
+    margin-left: 10px;
+    margin-right: 10px;
+    border-style:solid;
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+    border-top-width: 1px;
+    border-color: white;
+    color: white;
+    font-weight: bold;
+    font-family: monospace;
+    padding:7px;
+
+}
+
+.rowClass {
+    border-color: white;
+    border-radius: 6px;
+    border-width: 2px;
+    border-style: inset;
+    background-color: rgba(0, 0, 0, .075);
+    padding: 5px;
+    font-size: 14px;
+    font-family: sans-serif;
+    margin-top: 7px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.map {
+    height: 50px;
+    width: 100%;
+}
+
+.lblTxt {
+    color: #e23510;
+    font-style: italic;
+    font-variant: normal;
+    font-weight: bold;
+}
+
+.logo {
+    border-color: white;
+    border-width: 2px;
+    border-radius: 12px;
+    border-style: solid;
+    background-color: #0697c4;
+    color: white;
+    font-family: sans-serif;
+}
+
+.right-tabs .nav {
+    float: right;
+    border-bottom: 0px;
+}
+
+.right-tabs .nav li {
+    float: left
+}
+
+.right-tabs .tab-content {
+    float: left;
+    border-top: 1px solid #ddd;
+    margin-top: -1px;
+}
+
+.btn-Logout {
+    padding: 3px;
+    /*margin-top:3px;*/
+    font-weight: lighter;
+    width: 80px;
+    height: 30px;
+    background-color: #0697c4;
+    color: white;
+    border-color: white;
+    border-width: 1px;
+    border-radius: 5px;
+    border-style: solid;
+    font-family: sans-serif;
+}
+
+.dt-head {
+    padding-top: 8px;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    vertical-align: bottom;
+    font-family: monospace;
+}
+
+.sc-ag-style {
+    color: #3fc406;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 90px;
+    padding: 7px;
+}
+
+.sc-agh-style {
+    color: yellow;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 25px;
+    padding: 4px;
+}
+
+.sc-d-style {
+    color: #9DE51E;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 4px;
+}
+
+.sc-ind-style {
+    color: white;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 3px;
+}
+
+.dv-brdr1 {
+    border-color: white;
+    border-width: 1px;
+    border-radius: 5px;
+    border-style: solid;
+    background-color: #484c47;
+}
+
+.dp-class1 {
+    border-color: white;
+    border-radius: 6px;
+    width: 300px;
+    height: 35px;
+    background-color: #5a6268;
+    color: yellow;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.dp-class {
+    border-color: white;
+    border-radius: 6px;
+    height: 35px;
+    background-color: #5a6268;
+    color: yellow;
+    font-weight: bold;
+    font-size: 16px;
+}
+.datepicker{
+    z-index:1200 !important;
+}

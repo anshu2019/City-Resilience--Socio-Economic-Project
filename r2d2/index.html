@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <style>
+        html, body, #map1 {
+            height: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+
+        #legend-container {
+            font-family: Arial, sans-serif;
+            background: black;
+            padding: 10px;
+            margin: 10px;
+            border: 3px solid #000;
+        }
+
+        #legend-container h3 {
+            margin-top: 0;
+        }
+
+        .legend-color-box {
+            height: 20px;
+            width: 20px;
+            border-radius: 3px;
+            float: left;
+            border: 1px solid black;
+            margin-right: 6px;
+        }
+
+
+    </style>
+
+    <title>R2D2 UI</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
+    <link href="css/jquery-ui.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap-datepicker3.css"/>
+    <!--  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=&v=3.exp"></script>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/jquery.ui.core.min.js"></script>
+    <script src="js/jquery.ui.widget.min.js"></script>
+    <script src="js/jquery.ui.position.min.js"></script>
+    <script src="js/jquery.ui.autocomplete.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-datepicker.min.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/Chart.bundle.min.js"></script>
+    <script src="js/chartutil.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="ajax.js"></script>
+    <script src="config.js"></script>
+    <script src="chart.js"></script>
+    <script src="app.js"></script>
+
+
+    <!--javscript code for invoking functions at runtime....... -->
+    <script>
+        //startup function
+        window.onload = function () {
+            var m = moment().toDate();
+            $("#dtToday").append(m);
+            //console.log(m);
+            $("#btnLogout").css('display', 'none');
+            $("#dvLogin").css('display', 'block');
+            $("#dvBodyMain").css('display', 'none');
+            //initiate the map
+            initMap();
+            setupDefaultData();
+            drawCharts();
+            //updateLineChart();
+
+            //set datepicker
+
+            var options = {
+                format: 'mm/dd/yyyy',
+                todayHighlight: true,
+                autoclose: true
+
+            };
+            $("#dateHis").datepicker(options);
+            $("#dateAnaly1").datepicker(options);
+            $("#dateAnaly2").datepicker(options);
+            $("#dateHisChar1").datepicker(options);
+
+            $( "#dvSelLocHom" ).autocomplete({
+                max:10,
+                minLength:3,
+                source: SuburbName
+            });
+
+            $( "#dvSelLocHis" ).autocomplete({
+                max:10,
+                minLength:3,
+                source: SuburbName
+            });
+
+            $( "#dvSelLoc1Anl" ).autocomplete({
+                max:10,
+                minLength:3,
+                source: SuburbName
+            });
+
+            $( "#dvSelLoc2Anl" ).autocomplete({
+                max:10,
+                minLength:3,
+                source: SuburbName
+            });
+        }
+        //tabs
+        $(function () {
+            $('#myTab li:first-child a').tab('show');
+
+        });
+
+
+    </script>
+</head>
+<!--Body section-->
+<body style="background-color: #121b28">
+
+<!--HEADER section-->
+<div id="dvHeader" class="" style="padding-top:7px;">
+    <div class="row ">
+        <div class="col-md-2 logo" style="margin-left:30px;">
+            <h3 style="padding-left:7px;"> PALAMIR</h3>
+        </div>
+        <div class="col-md-4 ">
+            <h6>
+                <p id="dtToday" class="dt-head"></p>
+            </h6>
+        </div>
+        <div class="col-md-3"></div>
+        <div class="col-md-2">
+            <button id="btnLogout" type="button" onclick="funcLogout()" class="btn-Logout" style="">Logout</button>
+        </div>
+    </div>
+</div>
+
+<!--LOG IN section-->
+<div id="dvLogin" class="" style="padding:10px;">
+    <div class="row">
+        <div class="col-md-3" style="padding:0px;"></div>
+        <div class="col-md-3" style="padding-top:120px;">
+            <img src="img/RS21.png" style="padding:2px;"></img>
+        </div>
+        <div class="col-md-6" style="padding-top:205px;">
+            <div class="row">
+                <div class="col-md-4" style="font-weight: bold;color:white">
+                    <label> User Name</label>
+                </div>
+                <div class="col-md-5">
+                    <input id="txtUsrName" type="text"/>
+                </div>
+            </div>
+            <div class="row" style="padding:5px;">
+                <div class="col-md-4" style="font-weight: bold;color:white">
+                    <label> Password</label>
+                </div>
+                <div class="col-md-5">
+                    <input id="txtPwd" type="password"/>
+                </div>
+            </div>
+            <div class="row" style="padding:5px;">
+                <div class="col-md-4"></div>
+                <div class="col-md-2">
+                    <button id="btnLogin" type="button" class="btn-Logout" onclick="funcLogin()" style="">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Body section-->
+<div id="dvBodyMain" style="padding:5px">
+
+    <!--Tab section-->
+    <div id="dvMenu" class="right-tabs clearfix">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="homeTab" data-toggle="tab" href="#dvHome" role="tab"
+                   aria-controls="dvHome" aria-selected="true">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="historyTab" data-toggle="tab" href="#dvHistory" role="tab"
+                   aria-controls="dvHistory" aria-selected="false">History</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="anomalyTab" data-toggle="tab" href="#dvAnalytics" role="tab"
+                   aria-controls="dvAnalytics" aria-selected="false">Analysis</a>
+            </li>
+        </ul>
+    </div>
+
+    <!--Tab content section-->
+    <div id="dvMenuContent" class="tab-content dvMenuContent" style="padding:5px;height:500px;">
+
+        <!--Home Tab section-->
+        <div id="dvHome" class="tab-pane active" role="tabpanel" style="padding:8px;">
+            <div class="row">
+                <div id="dvScore" class="col-md-5">
+                    <div class="row ">
+                        <div class="col-md-6 dv-brdr1">
+                            <label><span class="sc-agh-style">City Resilience</span></label>
+                        </div>
+                        <div class="col-md-7"></div>
+                    </div>
+                    <div class="row ">
+                        <label><span id="spnHmAggScr" class="sc-ag-style"></span></label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 ">
+                            <label style="font-size: 18px;">Location</label>
+                        </div>
+                        <div class="col-md-8 sc-d-style">
+                            <span id="spnLocHom">Adelaide</span>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 5px">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 ">
+                            <label style="font-size: 18px;">Type</label>
+                        </div>
+                        <div class="col-md-8 sc-d-style">
+                            <span id="spnLocTypeHom">City</span>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:6px;">
+                        <div class='col-md-4'>
+                            <label style="font-size: 18px;">DATE *</label>
+                        </div>
+                        <div class='col-md-8'>
+                            <span id="spnDateHom"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 dv-brdr1" style="border-color:white;">
+                            <label><span class="sc-ind-style">Dimensions</span></label>
+                        </div>
+                        <div class="col-md-7"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label><span class="sc-d-style"> # Health & Well-Being</span></label>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-4">
+                            <label><span id="spnHmHWScr" class="sc-ind-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <select id="cmbHmHwInd" class="selectpicker dp-class1" onchange="selHomHWIndType(event)"
+                                    style="padding: 5px;width:220px;">
+                                <option value="Assistance Needed%">Assistance Needed</option>
+                                <option value="No Vehicles%">No Vehicles</option>
+                                <option value="Widowed Women%">Widowed Women</option>
+                                <option value="Elderly%">Elderly</option>
+                                <option value="Number of Crime">Number of Crime</option>
+                                <option value="Lived at same address 5 years ago%">Lived at same address 5 years ago
+                                </option>
+                                <option value="Average Number of Persons per Bedroom">Average Number of Persons per
+                                    Bedroom
+                                </option>
+                                <option value="Children%">Children</option>
+                            </select>
+
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-4">
+                            <label><span id="spnHmHWInd" class="sc-ind-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label><span class="sc-d-style"># Economy & Society</span></label>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-4">
+                            <label><span id="spnHmESScr" class="sc-ind-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            <select id="cmbHmESInd" class="selectpicker dp-class1" onchange="selHomESIndType(event)"
+                                    style="padding: 5px;width:220px;">
+                                <option value="Female Labor Participation%">Female Labor Participation</option>
+                                <option value="Median total household income">Median total household income</option>
+                                <option value="Unemployment%">Unemployment</option>
+                                <option value="Homeowners%">Homeowners</option>
+                            </select>
+
+
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-4">
+                            <label><span id="spnHmESInd" class="sc-ind-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label><span class="sc-d-style"># Infrastructure & Environment</span></label>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-4">
+                            <label><span id="spnHmIEScr" class="sc-ind-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            <select id="cmbHmIEInd" class="selectpicker dp-class1" onchange="selHomIEIndType(event)"
+                                    style="padding: 5px;width:220px;">
+                                <option value="No Internet Connections">No Internet Connections</option>
+                                <option value="Number of Beds">Number of Beds</option>
+                            </select>
+
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-4">
+                            <label><span id="spnHmIEInd" class="sc-ind-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label><span class="sc-d-style"># Leadership & Strategy</span></label>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-4">
+                            <label><span id="spnHmLSScr" class="sc-ind-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            <select id="cmbHmLSInd" class="selectpicker dp-class1" onchange="selHomLSIndType(event)"
+                                    style="padding: 5px;width:220px;">
+                                <option value="Government Education Facility">Government Education Facility</option>
+                                <option value="Number of Government Offices">Number of Government Offices</option>
+                            </select>
+
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-4">
+                            <label><span id="spnHmLSInd" class="sc-ind-style"></span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Map Section-->
+                <div id="dvMap" class="col-md-7" style="padding:12px;">
+                    <div class="row">
+                        <div class="col-md-3" style="margin-right:4px;">
+                            <select id="cmbLocTypeHom" class="selectpicker dp-class"
+                                    onchange="selLocationTypeHome(event)"
+                                    style="padding: 5px;">
+                                <option value="SUB">SUBURBS</option>
+                                <option value="PC">POSTCODE</option>
+                                <option value="LGA">LGA</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input id="dvSelLocHom" type='text' class="dp-class" placeholder="Choose Location"/>
+                        </div>
+                        <div class="col-md-1">
+                            <button id="btnHomGetData" type="button" class="btn-Logout" onclick="btnHomGetData()"
+                                    style="">get
+                            </button>
+                        </div>
+                    </div>
+                    <div clas="row" style="margin-top: 10px;"></div>
+                    <div clas="row">
+                        <div id="map1" style=" width:95%; height: 600px;"></div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <!--Home Tab section Ends here-->
+
+        <!--History Tab section-->
+        <div id="dvHistory" class="tab-pane fade" role="tabpanel" style="padding:8px;">
+            <div class="row">
+                <div id="dvHisScrPnl" class="col-md-12">
+
+                    <!--History Tab header-->
+                    <div class="row " style="margin-top:16px;">
+                        <div class="col-md-3 dv-brdr1">
+                            <label><span class="sc-agh-style">Historical Analysis</span></label>
+                        </div>
+                        <div class="col-md-1"></div>
+
+                        <div class="col-md-1" style="margin-right:4px;">
+                            <select id="cmbLocTypeHis" class="selectpicker dp-class" onchange="selHisAnalType(event)"
+                                    style="padding: 5px;">
+                                <option value="SUBURBS">City</option>
+                                <option value="POSTCODE">Suburbs</option>
+                                <option value="LGA">Postcode</option>
+                                <option value="CITY">LGA</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input id="dvSelLocHis" type='text' class="dp-class" placeholder="Choose Location"/>
+                        </div>
+                        <!--<div class="col-md-1"></div>-->
+                        <div class="col-md-2">
+                            <select id="cmbHisAnalysisTypeSel" class="selectpicker dp-class1" onchange=""
+                                    style="padding: 5px;width:160px;">
+                                <option value="D1">Daily Analysis</option>
+                                <option value="M1">Monthly Analysis</option>
+                                <option value="Y1">Yearly Analysis</option>
+                                <option value="Q1">Quarterly Analysis</option>
+                            </select>
+
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <div class='input-group date datepicker'>
+                                    <input id='dateHisChar1' type='text' class="form-control dp-class" placeholder="MM/DD/YYYY"/>
+                                    <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-th"></span>
+                                             </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <button id="btnHisGetChart1" type="button" class="btn-Logout" onclick="populateChart()"
+                                    style="">get
+                            </button>
+                        </div>
+                    </div>
+
+                    <!--History Tab score and radar Chart section-->
+                    <div class="row ">
+                        <!--History Tab score Section-->
+                        <div class="col-md-3 " style="background-color:#1b1e21">
+                            <div class="row">
+                                <span id="spnHisAggScr" class="sc-ag-style"></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 ">
+                                    <label style="font-size: 18px;">Location</label>
+                                </div>
+                                <div class="col-md-8 sc-d-style">
+                                    <span id="spnHisLoc"></span>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 5px">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 ">
+                                    <label style="font-size: 18px;">Type</label>
+                                </div>
+                                <div class="col-md-8 sc-d-style">
+                                    <span id="spnLocTypeHis"></span>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:6px;">
+                                <div class='col-md-4'>
+                                    <label style="font-size: 18px;">DATE *</label>
+                                </div>
+                                <div class='col-md-8'>
+                                    <div class="form-group">
+                                        <div class='input-group date'>
+                                            <input id="dateHis" type='text' class="form-control dp-class"
+                                                   placeholder="MM/DD/YYYY"/>
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-th"></span>
+                                             </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin:15px;">
+                                <button id="btnHisGet1" type="button" class="btn-Logout" onclick="getSubUrbDataHis()"
+                                        style="">get
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <!--Radar Chart section-->
+                        <div class="col-md-1 " style=""></div>
+                        <div class="col-md-5 " style="background-color:#A7A2A1;height:40%;">
+                            <canvas id="rdr1"></canvas>
+                        </div>
+                        <div class=" " style="">
+                            <!-- <canvas id="rdr2"></canvas>-->
+                        </div>
+                        <div class=" " style="">
+                            <!--  <canvas id="rdr3"></canvas>-->
+                        </div>
+                    </div>
+
+                    <!--History Tab content section-->
+                    <div class="row ">
+                        <!--History Tab Dimesnsions-->
+                        <div class="col-md-3" style="background-color:#1b1e21">
+
+                            <div class="row">
+                                <div class="col-md-12 dv-brdr1" style="border-color:white;">
+                                    <label><span class="sc-ind-style">Dimensions</span></label>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <label><span class="sc-d-style">Health & Well-Being</span></label>
+                                </div>
+                                <div class="col-md-1">
+                                    <label><span id="spnHisHWScr" class="sc-ind-style"></span></label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <select id="cmbHisHwInd" class="selectpicker dp-class1"
+                                            onchange="selHisHWIndType(event)"
+                                            style="padding: 5px;width:220px;">
+                                        <option value="Assistance Needed%">Assistance Needed</option>
+                                        <option value="No Vehicles%">No Vehicles</option>
+                                        <option value="Widowed Women%">Widowed Women</option>
+                                        <option value="Elderly%">Elderly</option>
+                                        <option value="Number of Crime">Number of Crime</option>
+                                        <option value="Lived at same address 5 years ago%">Lived at same address 5 years
+                                            ago
+                                        </option>
+                                        <option value="Average Number of Persons per Bedroom">Average Number of Persons
+                                            per
+                                            Bedroom
+                                        </option>
+                                        <option value="Children%">Children</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-1">
+                                    <label><span id="spnHisHWInd" class="sc-ind-style"></span></label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class=" col-md-10">
+                                    <label><span class="sc-d-style">Economy & Society</span></label>
+                                </div>
+
+                                <div class="col-md-1">
+                                    <label><span id="spnHisESScr" class="sc-ind-style"></span></label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-10">
+                                    <select id="cmbHisESInd" class="selectpicker dp-class1"
+                                            onchange="selHisESIndType(event)"
+                                            style="padding: 5px;width:220px;">
+                                        <option value="Female Labor Participation%">Female Labor Participation</option>
+                                        <option value="Median total household income">Median total household income
+                                        </option>
+                                        <option value="Unemployment%">Unemployment</option>
+                                        <option value="Homeowners%">Homeowners</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-1">
+                                    <label><span id="spnHisESInd" class="sc-ind-style"></span></label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <label><span class="sc-d-style">Infrastructure & Environment</span></label>
+                                </div>
+
+                                <div class="col-md-1">
+                                    <label><span id="spnHisIEScr" class="sc-ind-style"></span></label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <select id="cmbHisIEInd" class="selectpicker dp-class1"
+                                            onchange="selHisIEIndType(event)"
+                                            style="padding: 5px;width:220px;">
+                                        <option value="No Internet Connections">No Internet Connections</option>
+                                        <option value="Number of Beds">Number of Beds</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-1"><label><span id="spnHisIEInd" class="sc-ind-style"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <label><span class="sc-d-style">Leadership & Strategy</span></label>
+                                </div>
+
+                                <div class="col-md-1">
+                                    <label><span id="spnHisLSScr" class="sc-ind-style"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <select id="cmbHmLSInd" class="selectpicker dp-class1"
+                                            onchange="selHisLSIndType(event)"
+                                            style="padding: 5px;width:220px;">
+                                        <option value="Government Education Facility">Government Education Facility
+                                        </option>
+                                        <option value="Number of Government Offices">Number of Government Offices
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-1">
+                                    <label><span id="spnHisLSInd" class="sc-ind-style"></span></label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!--History Tab Line chart-->
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-9">
+                                    <div id="dvLineChart" style="margin-left:20px;"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Bottom radar chart -->
+                    <div class="row ">
+                        <div class="col-md-3" style="background-color:#1b1e21"></div>
+                        <div class="col-md-7">
+                            <div class="row ">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-3" style="background-color:#A7A2A1;height:50%;margin-left:61px;">
+                                    <canvas id="rdr2" style=""></canvas>
+                                </div>
+                                <div class="col-md-3" style="background-color:#A7A2A1;height:50%;">
+                                    <canvas id="rdr3" style=""></canvas>
+                                </div>
+                                <div class="col-md-3" style="background-color:#A7A2A1;height:50%;">
+                                    <canvas id="rdr4" style=""></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!--History Tab section Ends here-->
+
+
+        <!--Analytics section-->
+        <div id="dvAnalytics" class="tab-pane fade" role="tabpanel">
+            <!--header section-->
+            <div class="row ">
+                <div class="col-md-4">
+                    <label><span class="sc-agh-style">Suburb Analysis</span></label>
+                </div>
+                <div class="col-md-4">
+                    <input id="dvSelLoc1Anl" type='text' class="dp-class" placeholder="Choose Location"/>
+                </div>
+
+                <div class="col-md-4">
+                    <input id="dvSelLoc2Anl" type='text' class="dp-class" placeholder="Choose Location"/>
+                </div>
+
+            </div>
+            <div class="row ">
+                <div class="col-md-4">
+                    <label><span class=""></span></label>
+                </div>
+                <div class="col-md-2">
+
+                    <div class="form-group">
+                        <div class='input-group date'>
+                            <input id='dateAnaly1' type='text' class="form-control dp-class" placeholder="MM/DD/YYY"/>
+                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-th"></span>
+                                             </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button id="btnAnlGet1" type="button" class="btn-Logout" onclick="getAnalyticData1()" style="">get
+                    </button>
+                </div>
+                <div class="col-md-2">
+
+                    <div class="form-group">
+                        <div class='input-group date'>
+                            <input id='dateAnaly2' type='text' class="form-control dp-class" placeholder="MM/DD/YYY"/>
+                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-th"></span>
+                                             </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button id="btnAnlGet2" type="button" class="btn-Logout" onclick="getAnalyticData2()" style="">get
+                    </button>
+                </div>
+            </div>
+
+            <!--label section-->
+            <div class="row ">
+                <div class="col-md-4">
+                    <label><span class="">Categories</span></label>
+                </div>
+                <div class="col-md-4">
+                    <label><span class=""># Suburb 1</span></label>
+                </div>
+                <div class="col-md-4">
+                    <label><span class=""># Suburb 2</span></label>
+                </div>
+            </div>
+
+            <!--score section-->
+            <div class="row ">
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">* Location</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">* Date</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="sc-d-style">Resilience Score</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Dimensions</span></label>
+                        </div>
+                    </div>
+                    <!--Health-->
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="sc-d-style"># Health & Wellbeing</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Assistance Needed</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">No Vehicles</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Widowed Women</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Elderly</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Number of Crime</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Lived at same address 5 years ago </span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Average Number of Persons per Bedroom</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Children</span></label>
+                        </div>
+                    </div>
+
+
+                    <!--Economy-->
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="sc-d-style"># Economy & Society</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Female Labor Participation</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Median total household income</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Unemployment</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Homeowners</span></label>
+                        </div>
+                    </div>
+
+
+                    <!--Infrastructure-->
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="sc-d-style"># Infrastructure & Ecosystem</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">No Internet Connections</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Number of Beds</span></label>
+                        </div>
+                    </div>
+
+
+                    <!--Leadership-->
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="sc-d-style"># Leadership & Strategy</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Government Education Facility</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="">Number of Government Offices</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!--suburb 1-->
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlLoc1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlDt1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlRs1" class="sc-d-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="sc-d-style">----</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHW_1" class="sc-d-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd1_1" class=""></span></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd2_1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd3_1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd4_1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd5_1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd6_1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd7_1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd8_1" class=""></span></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlES_1" class="sc-d-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlESInd1_1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlESInd2_1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlESInd3_1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlESInd4_1" class=""></span></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlIE_1" class="sc-d-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlIEInd1_1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlIEInd2_1" class=""></span></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlLS_1" class="sc-d-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlLSInd1_1" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlLSInd2_1" class=""></span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!--suburb 2-->
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlLoc2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlDt2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlRs2" class="sc-d-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span class="sc-d-style">----</span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHW_2" class="sc-d-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd1_2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd2_2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd3_2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd4_2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd5_2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd6_2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd7_2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlHWInd8_2" class=""></span></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlES_2" class="sc-d-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlESInd1_2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlESInd2_2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlESInd3_2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlESInd4_2" class=""></span></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlIE_2" class="sc-d-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlIEInd1_2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlIEInd2_2" class=""></span></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlLS_2" class="sc-d-style"></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlLSInd1_2" class=""></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label><span id="spnAnlLSInd2_2" class=""></span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Analytics section Ends Here-->
+    </div>
+</div>
+</body>
+</html>
